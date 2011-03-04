@@ -1886,8 +1886,11 @@ class Facebook(object):
             return None
 
     def validate_iframe(self, request):
-        request_dict = request.POST if request.method == 'POST' else request.GET
-        if any(not request_dict.has_key(key) for key in ['userid','reqtime','appsig']):
+        if request.method == 'POST':
+            request_dict = request.POST
+        else:
+            request_dict = request.GET
+        if _any(not request_dict.has_key(key) for key in ['userid','reqtime','appsig']):
             return False
         request_time = request_dict['reqtime']
         time_now = int(time.time())
@@ -1943,6 +1946,12 @@ class Facebook(object):
             return False
 
 
+# for python2.4 compatibility
+def _any(iterable):
+    for i in iterable:
+        if i is True:
+            return True
+    return False
 
 
 if __name__ == '__main__':
